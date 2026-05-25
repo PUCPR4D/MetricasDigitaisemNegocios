@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nuvem vs Físico — PUCPR</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bordo: #8A0538;
+  --vermelho: #FF0040;
+  --rosa: #DB5284;
+  --roxo: #9654ff;
+  --roxo-suave: #6D64AE;
+  --verde: #00ABAC;
+  --bg: #f5f3f7;
+  --surface: #ffffff;
+  --text: #1a1022;
+  --muted: #6b6278;
+  --border: rgba(138,5,56,0.12);
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 48px 24px;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 700px 500px at 10% 0%, rgba(150,84,255,0.10) 0%, transparent 70%),
+    radial-gradient(ellipse 500px 400px at 90% 100%, rgba(0,171,172,0.10) 0%, transparent 70%),
+    radial-gradient(ellipse 400px 300px at 50% 50%, rgba(138,5,56,0.06) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wrapper {
+  position: relative;
+  z-index: 1;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+/* Header */
+
+.header {
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.header-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Syne', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bordo);
+  background: rgba(138,5,56,0.08);
+  border: 1px solid rgba(138,5,56,0.18);
+  padding: 5px 14px;
+  border-radius: 99px;
+  margin-bottom: 18px;
+}
+
+.header-eyebrow::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--vermelho);
+}
+
+h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(28px, 5vw, 44px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+h1 span {
+  color: var(--bordo);
+}
+
+.header-sub {
+  font-size: 15px;
+  color: var(--muted);
+  font-weight: 300;
+}
+
+/* Score cards */
+
+.score-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.score-card {
+  border-radius: 16px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.score-card.nuvem {
+  background: linear-gradient(135deg, var(--roxo) 0%, #6D64AE 100%);
+  color: #fff;
+}
+
+.score-card.fisico {
+  background: linear-gradient(135deg, var(--verde) 0%, #007e7f 100%);
+  color: #fff;
+}
+
+.score-card::after {
+  content: '';
+  position: absolute;
+  top: -30px;
+  right: -30px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+}
+
+.score-icon {
+  font-size: 32px;
+  line-height: 1;
+}
+
+.score-label {
+  font-family: 'Syne', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.score-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.score-wins {
+  margin-left: auto;
+  text-align: right;
+}
+
+.score-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.score-wins-label {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+/* Filter */
+
+.filter-bar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.filter-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.filter-btn {
+  padding: 6px 16px;
+  border-radius: 99px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.18s;
+}
+
+.filter-btn:hover {
+  border-color: var(--roxo);
+  color: var(--roxo);
+}
+
+.filter-btn.active {
+  background: var(--roxo);
+  color: #fff;
+  border-color: var(--roxo);
+}
+
+/* Table */
+
+.table-card {
+  background: var(--surface);
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  box-shadow: 0 4px 40px rgba(138,5,56,0.06), 0 1px 8px rgba(0,0,0,0.04);
+}
+
+.table-head {
+  display: grid;
+  grid-template-columns: 1.8fr 1fr 1fr;
+  background: var(--bordo);
+}
+
+.th {
+  padding: 16px 20px;
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.9);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.th.th-nuvem {
+  background: var(--roxo);
+}
+
+.th.th-fisico {
+  background: var(--verde);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1.8fr 1fr 1fr;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.row:hover {
+  background: rgba(150,84,255,0.04);
+}
+
+.cell {
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  border-right: 1px solid var(--border);
+}
+
+.cell:last-child {
+  border-right: none;
+}
+
+.cell-dim {
+  font-weight: 500;
+  color: var(--text);
+}
+
+.cell-dim .dim-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 15px;
+}
+
+.cell-val {
+  justify-content: center;
+}
+
+/* Badges */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 11px;
+  border-radius: 99px;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.badge-win {
+  background: rgba(0,171,172,0.12);
+  color: #007e7f;
+  border: 1px solid rgba(0,171,172,0.25);
+}
+
+.badge-mid {
+  background: rgba(109,100,174,0.12);
+  color: var(--roxo-suave);
+  border: 1px solid rgba(109,100,174,0.25);
+}
+
+.badge-lose {
+  background: rgba(219,82,132,0.12);
+  color: #b03060;
+  border: 1px solid rgba(219,82,132,0.25);
+}
+
+.badge-neu {
+  background: rgba(107,98,120,0.10);
+  color: var(--muted);
+  border: 1px solid rgba(107,98,120,0.18);
+}
+
+/* Legend */
+
+.legend {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 20px;
+  padding: 0 4px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.legend-tip {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* Footer */
+
+.footer {
+  margin-top: 36px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.footer strong {
+  color: var(--bordo);
+}
+
+.row[hidden] {
+  display: none !important;
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+<header class="header">
+  <div class="header-eyebrow"></div>
+  <h1>Nuvem <span>vs</span> Físico</h1>
+  <p class="header-sub">Análise comparativa das principais dimensões de decisão</p>
+</header>
+
+<div class="score-grid">
+
+  <div class="score-card nuvem">
+    <div class="score-icon">☁️</div>
+    <div>
+      <div class="score-label">Modelo</div>
+      <div class="score-title">Nuvem</div>
+    </div>
+    <div class="score-wins">
+      <div class="score-num" id="countNuvem">0</div>
+      <div class="score-wins-label">vantagens</div>
+    </div>
+  </div>
+
+  <div class="score-card fisico">
+    <div class="score-icon">🖥️</div>
+    <div>
+      <div class="score-label">Modelo</div>
+      <div class="score-title">Físico</div>
+    </div>
+    <div class="score-wins">
+      <div class="score-num" id="countFisico">0</div>
+      <div class="score-wins-label">vantagens</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="filter-bar">
+  <span class="filter-label">Filtrar:</span>
+
+  <button class="filter-btn active" onclick="setFilter(this,'all')">
+    Todas
+  </button>
+
+  <button class="filter-btn" onclick="setFilter(this,'custo')">
+    💰 Custos
+  </button>
+
+  <button class="filter-btn" onclick="setFilter(this,'controle')">
+    🔒 Controle
+  </button>
+
+  <button class="filter-btn" onclick="setFilter(this,'tech')">
+    ⚙️ Tecnologia
+  </button>
+</div>
+
+<div class="table-card">
+
+  <div class="table-head">
+    <div class="th">Dimensão</div>
+    <div class="th th-nuvem">Nuvem</div>
+    <div class="th th-fisico">Físico</div>
+  </div>
+
+  <div id="tableBody">
+
+    <div class="row" data-tags="tech">
+      <div class="cell cell-dim">
+        <div class="dim-icon" style="background:rgba(150,84,255,0.12)">📈</div>
+        Escalabilidade
+      </div>
+
+      <div class="cell cell-val">
+        <span class="badge badge-win" data-side="nuvem">✓ Muito alta</span>
+      </div>
+
+      <div class="cell cell-val">
+        <span class="badge badge-lose" data-side="fisico">↓ Limitada</span>
+      </div>
+    </div>
+
+    <div class="row" data-tags="custo">
+      <div class="cell cell-dim">
+        <div class="dim-icon" style="background:rgba(138,5,56,0.10)">💵</div>
+        Investimento inicial
+      </div>
+
+      <div class="cell cell-val">
+        <span class="badge badge-win" data-side="nuvem">✓ Baixo</span>
+      </div>
+
+      <div class="cell cell-val">
+        <span class="badge badge-lose" data-side="fisico">↓ Alto</span>
+      </div>
+    </div>
+
+    <div class="row" data-tags="custo">
+      <div class="cell cell-dim">
+        <div class="dim-icon" style="background:rgba(219,82,132,0.12)">🔄</div>
+        Custo variável
+      </div>
+
+      <div class="cell cell-val">
+        <span class="badge badge-win" data-side="nuvem">✓ Sim</span>
+      </div>
+
+      <div class="cell cell-val">
+        <span class="badge badge-neu">— Não</span>
+      </div>
+    </div>
+
+    <div class="row" data-tags="controle">
+      <div class="cell cell-dim">
+        <div class="dim-icon" style="background:rgba(0,171,172,0.12)">🔐</div>
+        Controle físico dos dados
+      </div>
+
+      <div class="cell cell-val">
+        <span class="badge badge-lose">↓ Menor</span>
+      </div>
+
+      <div class="cell cell-val">
+        <span class="badge badge-win" data-side="fisico">✓ Total</span>
+      </div>
+    </div>
+
+    <div class="row" data-tags="tech">
+      <div class="cell cell-dim">
+        <div class="dim-icon" style="background:rgba(109,100,174,0.12)">🔌</div>
+        Integração digital
+      </div>
+
+      <div class="cell cell-val">
+        <span class="badge badge-win" data-side="nuvem">✓ Alta</span>
+      </div>
+
+      <div class="cell cell-val">
+        <span class="badge badge-mid">~ Moderada</span>
+      </div>
+    </div>
+
+    <div class="row" data-tags="controle">
+      <div class="cell cell-dim">
+        <div class="dim-icon" style="background:rgba(138,5,56,0.10)">🔧</div>
+        Manutenção
+      </div>
+
+      <div class="cell cell-val">
+        <span class="badge badge-win" data-side="nuvem">✓ Fornecedor</span>
+      </div>
+
+      <div class="cell cell-val">
+        <span class="badge badge-neu">— Organização</span>
+      </div>
+    </div>
+
+    <div class="row" data-tags="tech">
+      <div class="cell cell-dim">
+        <div class="dim-icon" style="background:rgba(0,171,172,0.12)">⚡</div>
+        Flexibilidade
+      </div>
+
+      <div class="cell cell-val">
+        <span class="badge badge-win" data-side="nuvem">✓ Alta</span>
+      </div>
+
+      <div class="cell cell-val">
+        <span class="badge badge-lose" data-side="fisico">↓ Baixa</span>
+      </div>
+    </div>
+
+    <div class="row" data-tags="controle">
+      <div class="cell cell-dim">
+        <div class="dim-icon" style="background:rgba(219,82,132,0.12)">📋</div>
+        Compliance específico
+      </div>
+
+      <div class="cell cell-val">
+        <span class="badge badge-mid">~ Dep. do provedor</span>
+      </div>
+
+      <div class="cell cell-val">
+        <span class="badge badge-win" data-side="fisico">✓ Customizável</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="legend">
+  <span class="legend-item">
+    <span class="legend-dot" style="background:#007e7f"></span>
+    Vantagem
+  </span>
+
+  <span class="legend-item">
+    <span class="legend-dot" style="background:var(--roxo-suave)"></span>
+    Moderado
+  </span>
+
+  <span class="legend-item">
+    <span class="legend-dot" style="background:#b03060"></span>
+    Desvantagem
+  </span>
+
+  <span class="legend-item">
+    <span class="legend-dot" style="background:var(--muted)"></span>
+    Neutro
+  </span>
+
+  <span class="legend-tip">
+    Comparação entre os modelos
+  </span>
+</div>
+
+<footer class="footer">
+  <strong>PUCPR</strong>
+</footer>
+
+</div>
+
+<script>
+function setFilter(btn, filter) {
+
+  document.querySelectorAll('.filter-btn')
+    .forEach(b => b.classList.remove('active'));
+
+  btn.classList.add('active');
+
+  document.querySelectorAll('.row').forEach(row => {
+
+    const tags = row.dataset.tags || '';
+
+    const show =
+      filter === 'all' || tags.includes(filter);
+
+    row.toggleAttribute('hidden', !show);
+  });
+
+  countWins();
+}
+
+function countWins() {
+
+  let n = 0;
+  let f = 0;
+
+  document.querySelectorAll('.row:not([hidden])')
+    .forEach(row => {
+
+      row.querySelectorAll('[data-side]')
+        .forEach(b => {
+
+          if (b.dataset.side === 'nuvem') n++;
+
+          if (b.dataset.side === 'fisico') f++;
+        });
+    });
+
+  document.getElementById('countNuvem').textContent = n;
+  document.getElementById('countFisico').textContent = f;
+}
+
+countWins();
+</script>
+
+</body>
+</html>
